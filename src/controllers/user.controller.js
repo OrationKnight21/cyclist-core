@@ -79,4 +79,8 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { deleteUser, logIn, signUp };
+const verifyUser = async (req, res) => {
+  return res.status(201);
+};
+
+export { deleteUser, logIn, signUp, verifyUser };
