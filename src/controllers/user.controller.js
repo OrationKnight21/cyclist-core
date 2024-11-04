@@ -80,7 +80,7 @@ const deleteUser = async (req, res) => {
 };
 
 const verifyUser = async (req, res) => {
-  return res.status(201);
+  return res.status(201).json({ status: "ok" });
 };
 
 export { deleteUser, logIn, signUp, verifyUser };
