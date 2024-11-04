@@ -10,6 +10,7 @@ const bikeSchema = new mongoose.Schema(
     isAvailable: { type: Boolean, default: true },
     pricePerHour: { type: Number, required: true },
     pricePerDay: { type: Number, required: true },
+    image: { type: String, required: true },
   },
   { timestamps: true }
 );
