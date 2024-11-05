@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 import { userRouter } from "./routes/user.routes.js";
 import { bikeRouter } from "./routes/bike.routes.js";
+import { rentalRouter } from "./routes/rental.routes.js";
 
 // load .env file
 dotenv.config();
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 
 app.use("/user", userRouter);
 app.use("/bike", bikeRouter);
+app.use("/rental", rentalRouter);
 
 // connect to db and start server
 mongoose
