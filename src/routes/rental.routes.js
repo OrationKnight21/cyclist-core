@@ -1,15 +1,15 @@
 import { Router } from "express";
 import {
   postRentalRecord,
-  getAvailableBikes,
+  getRentedBike,
 } from "../controllers/rental.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
 
 const rentalRouter = Router();
 
 // post rental record
-rentalRouter.post("/setup", authMiddleware, postRentalRecord);
+rentalRouter.post("/rent", authMiddleware, postRentalRecord);
 // get bikes
-rentalRouter.get("/bikes", authMiddleware, getAvailableBikes);
+rentalRouter.get("/myBike", authMiddleware, getRentedBike);
 
 export { rentalRouter };

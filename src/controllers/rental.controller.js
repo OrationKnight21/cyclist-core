@@ -5,8 +5,8 @@ import Rental from "../models/rental.model.js";
 const postRentalRecord = async (req, res) => {
   try {
     // TODO: define cost per km across the app
-    const email = req.body.email;
-    const bikeID = req.body.bikeID;
+    const email = req.email;
+    const bikeId = req.body.bikeId;
 
     const startTime = new Date(req.body.startTime);
     const endTime = new Date(req.body.endTime);
@@ -23,22 +23,23 @@ const postRentalRecord = async (req, res) => {
         .json({ error: "End time is before the start time" });
     }
 
-    // define total cost
-    const costPerMinute = 1.2;
-    const totalCost = Math.abs(interval / 60000) * costPerMinute;
-
-    // parse body
-
     // get user from email
     const reqUser = await User.findOne({ email });
-    if (!reqUser) {
-      return res.status(401).json({ error: "User does not exist" });
-    }
 
     // get bike from bikeID
-    const reqBike = await Bike.findById(bikeID);
+    const reqBike = await Bike.findById(bikeId);
     if (!reqBike) {
       return res.status(404).json({ error: "Bike not found" });
+    }
+
+    const hours = interval / (1000 * 60 * 60);
+    let totalCost;
+
+    if (hours < 24) {
+      totalCost = hours * reqBike.pricePerHour;
+    } else {
+      const days = Math.ceil(hours / 24);
+      totalCost = days * reqBike.pricePerDay;
     }
 
     // create new rental
@@ -58,31 +59,29 @@ const postRentalRecord = async (req, res) => {
   }
 };
 
-const getAvailableBikes = async (req, res) => {
+const getRentedBike = async (req, res) => {
   try {
-    // Get bike IDs of bikes currently rented
-    const currentRentals = await Rental.find({
+    const user = await User.findOne({ email: req.email });
+    const rented = await Rental.findOne({
+      user: user._id,
       status: "ongoing",
-      startTime: { $lte: new Date() },
-      endTime: { $gte: new Date() },
-    }).select("bike");
+    }).populate("bike");
 
-    // Extract IDs of bikes currently in use
-    const rentedBikeIds = currentRentals.map((rental) => rental.bike);
+    if (!rented) {
+      return res.status(404).json({ error: "No ongoing rental" });
+    }
 
-    // Query for bikes not in the rentedBikeIds list
-    const availableBikes = await Bike.find({
-      _id: { $nin: rentedBikeIds },
-    }).select("_id");
+    if (rented.endTime < new Date()) {
+      rented.status = "completed";
+      await rented.save();
+      return res.status(404).json({ error: "Rental has ended" });
+    }
 
-    // Return only the IDs of available bikes
-    res
-      .status(200)
-      .json({ availableBikeIds: availableBikes.map((bike) => bike._id) });
+    return res.status(200).json(rented);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Error fetching rented bike:", error);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
-export { postRentalRecord, getAvailableBikes };
+export { postRentalRecord, getRentedBike };
