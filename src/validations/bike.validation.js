@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const updateServerUrlSchema = z.object({
-  serverUrl: z.string().url(),
+  serverUrl: z.string(),
   bikeId: z.string(),
 });
 
