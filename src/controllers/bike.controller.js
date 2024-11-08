@@ -1,4 +1,5 @@
 import Bike from "../models/bike.model.js";
+import { updateServerUrlSchema } from "../validations/bike.validation.js";
 
 const getAllBikes = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -45,4 +46,25 @@ const getBikeById = async (req, res) => {
   }
 };
 
-export { getAllBikes, getBikeById };
+const updateServerUrl = async (req, res) => {
+  try {
+    const data = updateServerUrlSchema.safeParse(req.body);
+    if (!data.success) {
+      return res.status(400).json({ error: data.error });
+    }
+
+    const bike = await Bike.findById(data.data.bikeId);
+
+    if (!bike) {
+      return res.status(404).json({ error: "bike not found" });
+    }
+
+    bike.serverUrl = data.data.serverUrl;
+    await bike.save();
+    return res.status(200).json({ message: "serverUrl updated" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export { getAllBikes, getBikeById, updateServerUrl };

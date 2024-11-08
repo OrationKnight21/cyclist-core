@@ -10,10 +10,7 @@ const bikeSchema = new mongoose.Schema(
     isAvailable: { type: Boolean, default: true },
     pricePerHour: { type: Number, required: true },
     pricePerDay: { type: Number, required: true },
-    wifiSsid: { type: String, required: true },
-    wifiPassword: { type: String, required: true },
-    requestUrl: { type: String, required: true },
-    matchKey: { type: String, required: true },
+    serverUrl: { type: String, required: true },
     image: { type: String, required: true },
   },
   { timestamps: true }
