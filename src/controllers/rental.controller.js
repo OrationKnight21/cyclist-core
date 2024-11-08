@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import Bike from "../models/bike.model.js";
 import Rental from "../models/rental.model.js";
+import { unlockCycleSchema } from "../validations/rental.validation.js";
 
 const postRentalRecord = async (req, res) => {
   try {
@@ -84,4 +85,27 @@ const getRentedBike = async (req, res) => {
   }
 };
 
-export { postRentalRecord, getRentedBike };
+const unlockCycle = async (req, res) => {
+  try {
+    const data = unlockCycleSchema.safeParse(req.body);
+    if (!data.success) {
+      return res.status(400).json({ error: data.error });
+    }
+
+    const rental = await Rental.findById(data.data.rentalId);
+
+    if (!rental) {
+      return res.status(404).json({ error: "Rental not found" });
+    }
+
+    if (rental.endTime > new Date()) {
+      return res.status(200).json({ message: "Bike unlocked" });
+    }
+
+    return res.status(401).json({ error: "Bike cannot be unlocked" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+export { postRentalRecord, getRentedBike, unlockCycle };
