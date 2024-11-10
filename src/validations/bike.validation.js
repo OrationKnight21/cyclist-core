@@ -5,4 +5,10 @@ const updateServerUrlSchema = z.object({
   bikeId: z.string(),
 });
 
-export { updateServerUrlSchema };
+const updateLocationSchema = z.object({
+  bikeId: z.string(),
+  longitude: z.string(),
+  latitude: z.string(),
+});
+
+export { updateLocationSchema, updateServerUrlSchema };

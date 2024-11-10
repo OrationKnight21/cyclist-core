@@ -4,8 +4,8 @@ const bikeSchema = new mongoose.Schema(
   {
     model: { type: String, required: true },
     location: {
-      lat: { type: Number, required: true },
-      lng: { type: Number, required: true },
+      lat: { type: String, required: true },
+      lng: { type: String, required: true },
     },
     isAvailable: { type: Boolean, default: true },
     pricePerHour: { type: Number, required: true },

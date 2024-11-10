@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getAllBikes,
   getBikeById,
+  updateLocation,
   updateServerUrl,
 } from "../controllers/bike.controller.js";
 
@@ -14,4 +15,6 @@ bikeRouter.get("/", getAllBikes);
 bikeRouter.get("/one", getBikeById);
 
 bikeRouter.post("/update", updateServerUrl);
+bikeRouter.post("/update-location", updateLocation);
+
 export { bikeRouter };
